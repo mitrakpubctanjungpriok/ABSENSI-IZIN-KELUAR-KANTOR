@@ -315,7 +315,7 @@ const AttendanceSystem = () => {
         
         // Validasi harus jawab YA/SUDAH
         if (formData.izinPengawas !== 'Ya') {
-            alert('❌ ANDA HARUS IZIN KEPADA PENGAWAS LANTAI TERLEBIH DAHULU!');
+            alert('❌ ANDA HARUS IZIN KEPADA PENGAWAS TERLEBIH DAHULU!');
             return;
         }
         
@@ -343,8 +343,18 @@ const AttendanceSystem = () => {
     };
 
     const exportToCSV = () => {
-        const headers = ['TANGGAL', 'WAKTU INPUT', 'NAMA', 'TIPE', 'WAKTU', 'KEPERLUAN', 'LOKASI'];
-        const rows = sortedFilteredAttendances.map(a => [a.date, a.timestamp, a.name, a.type.toUpperCase(), a.customTime, a.purpose || '-', a.location]);
+        const headers = ['TANGGAL', 'WAKTU INPUT', 'NAMA', 'TIPE', 'WAKTU', 'IZIN PENGAWAS', 'IZIN SUBBAG TURT', 'KEPERLUAN', 'LOKASI'];
+        const rows = sortedFilteredAttendances.map(a => [
+            a.date, 
+            a.timestamp, 
+            a.name, 
+            a.type.toUpperCase(), 
+            a.customTime, 
+            a.izinPengawas || '-',
+            a.izinSubbagTurt || '-',
+            a.purpose || '-', 
+            a.location
+        ]);
         const csv = [headers, ...rows].map(row => row.join(';')).join('\n');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url = window.URL.createObjectURL(blob);
@@ -490,7 +500,7 @@ const AttendanceSystem = () => {
                                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 uppercase shadow-inner"
                                             >
-                                                <option value="">-- PILIH NAMA DARI DAFTAR --</option>
+                                                <option value="">-- PILIH NAMA ANDA --</option>
                                                 {employeeList.map((name) => (
                                                     <option key={name} value={name}>{name}</option>
                                                 ))}
@@ -537,7 +547,7 @@ const AttendanceSystem = () => {
                                             </div>
                                             {formData.izinPengawas === 'Tidak' && (
                                                 <div className="mt-2 bg-red-50 border border-red-300 rounded-lg p-3">
-                                                    <p className="text-red-700 text-sm font-semibold">⚠️ ANDA HARUS IZIN KEPADA PENGAWAS LANTAI TERLEBIH DAHULU!</p>
+                                                    <p className="text-red-700 text-sm font-semibold">⚠️ ANDA HARUS IZIN KEPADA PENGAWAS LANTAI TERLEBI DAHULU!</p>
                                                 </div>
                                             )}
                                         </div>
@@ -584,7 +594,7 @@ const AttendanceSystem = () => {
                                                 value={formData.purpose}
                                                 onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
                                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 uppercase shadow-inner"
-                                                placeholder="Contoh: BELI MAKAN ATAU SEJENISNYA" rows="3"
+                                                placeholder="Contoh: MEMBELI MAKAN ATAU SEBAGAINYA" rows="3"
                                             />
                                         </div>
                                         <div className="bg-orange-50 p-4 rounded-xl border border-orange-200">
@@ -611,7 +621,7 @@ const AttendanceSystem = () => {
                             ) : (
                                 <div className="bg-white rounded-xl shadow-2xl p-6 border-t-8 border-green-500">
                                     <h2 className="text-2xl font-extrabold text-gray-800 mb-2 flex items-center"><LogIn className='w-6 h-6 mr-2 text-green-500' /> ABSENSI MASUK</h2>
-                                    <p className="text-gray-600 text-sm mb-6 border-b pb-2 border-dashed">Ambil foto, lalu tekan nama Anda untuk absen dan selesai .</p>
+                                    <p className="text-gray-600 text-sm mb-6 border-b pb-2 border-dashed">Ambil foto, lalu tekan nama Anda untuk absen.</p>
                                     <div className="mb-6 bg-green-50 p-4 rounded-xl border border-green-200">
                                         <label className="block text-sm font-bold text-gray-700 mb-3 flex items-center"><UserCheck className="w-4 h-4 mr-1 text-green-600" /> AMBIL FOTO BARANG ATAU SEJENISNYA (WAJIB) <span className='text-red-500'>*</span></label>
                                         <input
@@ -738,7 +748,7 @@ const AttendanceSystem = () => {
                             <div className="bg-white rounded-xl p-6 shadow-lg border-l-4 border-purple-500">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-gray-500 text-sm font-medium">KARYAWAN</p>
+                                        <p className="text-gray-500 text-sm font-medium">KARYAWAN UNIK</p>
                                         <p className="text-3xl font-bold text-gray-800 mt-1">{stats.unique}</p>
                                     </div>
                                     <Users className="w-12 h-12 text-purple-500 opacity-20" />
@@ -777,6 +787,8 @@ const AttendanceSystem = () => {
                                             <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Nama</th>
                                             <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Tipe</th>
                                             <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Waktu</th>
+                                            <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Izin Pengawas</th>
+                                            <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Izin Subbag Turt</th>
                                             <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Keperluan</th>
                                             <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Lokasi</th>
                                             <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Foto</th>
@@ -785,7 +797,7 @@ const AttendanceSystem = () => {
                                     <tbody>
                                         {sortedFilteredAttendances.length === 0 ? (
                                             <tr>
-                                                <td colSpan="8" className="px-4 py-8 text-center text-gray-500">
+                                                <td colSpan="10" className="px-4 py-8 text-center text-gray-500">
                                                     <AlertCircle className="w-12 h-12 mx-auto mb-2 opacity-50" />
                                                     Belum ada data absensi
                                                 </td>
@@ -804,6 +816,28 @@ const AttendanceSystem = () => {
                                                         </span>
                                                     </td>
                                                     <td className="px-4 py-3 text-sm text-gray-800 font-mono">{att.customTime}</td>
+                                                    <td className="px-4 py-3">
+                                                        {att.type === 'keluar' ? (
+                                                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                                                                att.izinPengawas === 'Ya' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                                                            }`}>
+                                                                {att.izinPengawas || '-'}
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-gray-400 text-xs">-</span>
+                                                        )}
+                                                    </td>
+                                                    <td className="px-4 py-3">
+                                                        {att.type === 'keluar' ? (
+                                                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                                                                att.izinSubbagTurt === 'Sudah' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                                                            }`}>
+                                                                {att.izinSubbagTurt || '-'}
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-gray-400 text-xs">-</span>
+                                                        )}
+                                                    </td>
                                                     <td className="px-4 py-3 text-sm text-gray-600">{att.purpose || '-'}</td>
                                                     <td className="px-4 py-3">
                                                         <LocationDisplay locationData={att.location} />
